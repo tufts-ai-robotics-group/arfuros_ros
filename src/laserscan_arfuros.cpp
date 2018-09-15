@@ -23,7 +23,7 @@ sensor_msgs::LaserScan filterScan(sensor_msgs::LaserScan scanData){
     sensor_msgs::LaserScan filtered = scanData;
 
     for (int i = 0; i < filtered.ranges.size(); i ++){
-        if (isnan(filtered.ranges[i])){
+        if (isnan(filtered.ranges[i]) || isinf(filtered.ranges[i])){
             filtered.ranges[i] = -1;
         }
     }
