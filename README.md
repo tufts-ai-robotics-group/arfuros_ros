@@ -1,1 +1,1 @@
-arfuros_ros
+ROS Package for ARFUROS
