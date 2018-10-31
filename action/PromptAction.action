@@ -2,10 +2,11 @@
 string prompt_type
 string prompt_text
 string[] options
+float32 max_wait_time
 ---
 #result definition
 bool timeout
 string selected_option
 ---
 #feedback definition
-bool device_connected
+bool device_waiting

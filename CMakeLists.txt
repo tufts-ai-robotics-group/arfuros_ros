@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   message_generation
   actionlib_msgs
+  actionlib
   nav_msgs
   sensor_msgs
   geometry_msgs
@@ -68,8 +69,8 @@ add_message_files(
 
 ## Generate actions in the 'action' folder
 add_action_files(
-   FILES
-   PromptAction.action
+   DIRECTORY action
+   FILES PromptAction.action
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -141,6 +142,27 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/arfuros_node.cpp)
 
+
+add_executable(path_arfuros src/path_arfuros.cpp)
+target_link_libraries(path_arfuros ${catkin_LIBRARIES})
+add_dependencies(path_arfuros arfuros)
+
+add_executable(laserscan_arfuros src/laserscan_arfuros.cpp)
+target_link_libraries(laserscan_arfuros ${catkin_LIBRARIES})
+add_dependencies(laserscan_arfuros arfuros)
+
+add_executable(localization_arfuros src/localization_arfuros.cpp)
+target_link_libraries(localization_arfuros ${catkin_LIBRARIES})
+add_dependencies(localization_arfuros arfuros)
+
+add_executable(costmap_arfuros src/costmap_arfuros.cpp)
+target_link_libraries(costmap_arfuros ${catkin_LIBRARIES})
+add_dependencies(costmap_arfuros arfuros)
+
+add_executable(prompt_server src/prompt_server.cpp)
+target_link_libraries(prompt_server ${catkin_LIBRARIES})
+add_dependencies(prompt_server arfuros)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -149,12 +171,16 @@ include_directories(
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(
+#  prompt_server
+#  ${arfuros_EXPORTED_TARGETS}
+#)
 
-## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+# Specify libraries to link a library or executable target against
+#target_link_libraries(
+#  prompt_server
+#  ${catkin_LIBRARIES}
+#)
 
 #############
 ## Install ##
@@ -203,21 +229,5 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-add_executable(path_arfuros src/path_arfuros.cpp)
-target_link_libraries(path_arfuros ${catkin_LIBRARIES})
-add_dependencies(path_arfuros arfuros)
-
-add_executable(laserscan_arfuros src/laserscan_arfuros.cpp)
-target_link_libraries(laserscan_arfuros ${catkin_LIBRARIES})
-add_dependencies(laserscan_arfuros arfuros)
-
-add_executable(localization_arfuros src/localization_arfuros.cpp)
-target_link_libraries(localization_arfuros ${catkin_LIBRARIES})
-add_dependencies(localization_arfuros arfuros)
-
-add_executable(costmap_arfuros src/costmap_arfuros.cpp)
-target_link_libraries(costmap_arfuros ${catkin_LIBRARIES})
-add_dependencies(costmap_arfuros arfuros)
 
 catkin_package()
