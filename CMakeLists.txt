@@ -57,7 +57,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
    FILES
    Prompt.msg
-   PromptResponse.msg
+   PromptFeedback.msg
 )
 
 ## Generate services in the 'srv' folder

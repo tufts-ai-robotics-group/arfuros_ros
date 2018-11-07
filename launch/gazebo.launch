@@ -9,5 +9,7 @@
   <node name="path_relative" pkg="arfuros" type="path_arfuros" respawn="true"/>
   <node name="localization_relative" pkg="arfuros" type="localization_arfuros" respawn="true"/>
   <node name="costmap_relative" pkg="arfuros" type="costmap_arfuros" respawn="true"/>
+  <node name="prompt_server" pkg="arfuros" type="prompt_server" respawn="true"/>
+
 
 </launch>
