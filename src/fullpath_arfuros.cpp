@@ -23,6 +23,7 @@ const std::string FRAME_IN  = "map";
 const std::string FRAME_OUT = "base_link";
 const int REDUCTION_FACTOR  = 5;
 const int FREQUENCY         = 30;
+double z_pos = 0;
 
 geometry_msgs::TransformStamped transform;
 nav_msgs::Path latestMsg;
@@ -48,6 +49,7 @@ nav_msgs::Path transformPath(nav_msgs::Path input){
     
     for(int i = 0; i < transformed.poses.size(); i++){
         tf2::doTransform(transformed.poses[i], transformed.poses[i], transform);
+        transformed.poses[i].z = z_pos; // z_pos can be updated through launch file
     }
 
     return transformed;
