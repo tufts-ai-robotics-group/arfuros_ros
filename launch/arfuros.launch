@@ -1,0 +1,11 @@
+<launch>
+
+  <node name="laser_filter" pkg="arfuros" type="laserscan_arfuros" respawn="true"/>
+  <node name="path_relative" pkg="arfuros" type="path_arfuros" respawn="true"/>
+  <node name="localization_relative" pkg="arfuros" type="localization_arfuros" respawn="true"/>
+  <node name="costmap_relative" pkg="arfuros" type="costmap_arfuros" respawn="true"/>
+  <node name="full_path" pkg="arfuros" type="fullpath_arfuros" respawn="true"/>
+  <node name="blinker" pkg="arfuros" type="blinker_arfuros" respawn="true"/>
+  <node name="prompt_server" pkg="arfuros" type="prompt_server" respawn="true"/>
+
+</launch>

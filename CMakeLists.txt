@@ -58,6 +58,7 @@ add_message_files(
    FILES
    Prompt.msg
    PromptFeedback.msg
+   BlinkerMsg.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -147,6 +148,10 @@ add_executable(path_arfuros src/path_arfuros.cpp)
 target_link_libraries(path_arfuros ${catkin_LIBRARIES})
 add_dependencies(path_arfuros arfuros)
 
+add_executable(fullpath_arfuros src/fullpath_arfuros.cpp)
+target_link_libraries(fullpath_arfuros ${catkin_LIBRARIES})
+add_dependencies(fullpath_arfuros arfuros)
+
 add_executable(laserscan_arfuros src/laserscan_arfuros.cpp)
 target_link_libraries(laserscan_arfuros ${catkin_LIBRARIES})
 add_dependencies(laserscan_arfuros arfuros)
@@ -158,6 +163,10 @@ add_dependencies(localization_arfuros arfuros)
 add_executable(costmap_arfuros src/costmap_arfuros.cpp)
 target_link_libraries(costmap_arfuros ${catkin_LIBRARIES})
 add_dependencies(costmap_arfuros arfuros)
+
+add_executable(blinker_arfuros src/blinker_arfuros.cpp)
+target_link_libraries(blinker_arfuros ${catkin_LIBRARIES})
+add_dependencies(blinker_arfuros arfuros)
 
 add_executable(prompt_server src/prompt_server.cpp)
 target_link_libraries(prompt_server ${catkin_LIBRARIES})
