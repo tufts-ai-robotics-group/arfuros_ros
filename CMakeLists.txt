@@ -166,11 +166,11 @@ add_dependencies(costmap_arfuros arfuros)
 
 add_executable(blinker_arfuros src/blinker_arfuros.cpp)
 target_link_libraries(blinker_arfuros ${catkin_LIBRARIES})
-add_dependencies(blinker_arfuros arfuros)
+add_dependencies(blinker_arfuros arfuros_generate_messages_cpp)
 
 add_executable(prompt_server src/prompt_server.cpp)
 target_link_libraries(prompt_server ${catkin_LIBRARIES})
-add_dependencies(prompt_server arfuros)
+add_dependencies(prompt_server arfuros_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

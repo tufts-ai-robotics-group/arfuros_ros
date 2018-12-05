@@ -46,7 +46,7 @@ nav_msgs::Path transformPath(nav_msgs::Path input){
     
     for(int i = 0; i < transformed.poses.size(); i++){
         tf2::doTransform(transformed.poses[i], transformed.poses[i], transform);
-        transformed.poses[i].position.z = z_pos; // z_pos can be updated through launch file
+        transformed.poses[i].pose.position.z = z_pos; // z_pos can be updated through launch file
     }
 
     return transformed;
@@ -65,7 +65,7 @@ int main (int argc, char **argv){
     ros::NodeHandle n;
     
     // Set z_pos from launch file parameter (default val = 0)
-    n.param("z_pos", z_pos, 0);
+    n.param("z_pos", z_pos, 0.0);
 
     relativePub = n.advertise<nav_msgs::Path>(TOPIC_OUT, 5);
     ros::Subscriber globalSub  = n.subscribe(TOPIC_IN, 5, pathCallback);
