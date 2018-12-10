@@ -17,11 +17,13 @@ ros::Publisher promptPub;
 
 Server *promptServer;
 bool requestUnderway = false;
+int id_counter = 0;
 
 void execute(const arfuros::PromptActionGoalConstPtr& goal, Server* as)
 {
     // Create the Request
     arfuros::Prompt request;
+    request.prompt_id = id;
     request.type = goal->prompt_type;
     request.text = goal->prompt_text;
     request.options = goal->options;
@@ -33,6 +35,8 @@ void execute(const arfuros::PromptActionGoalConstPtr& goal, Server* as)
     //Regulate Feedback/Success/Failure
     promptServer = as;
     requestUnderway = true;
+
+    id_counter++;
 }
 
 void feedbackCallback(const arfuros::PromptFeedback::ConstPtr& inMsg){
