@@ -23,7 +23,7 @@ void execute(const arfuros::PromptActionGoalConstPtr& goal, Server* as)
 {
     // Create the Request
     arfuros::Prompt request;
-    request.prompt_id = id;
+    request.prompt_id = id_counter;
     request.type = goal->prompt_type;
     request.text = goal->prompt_text;
     request.options = goal->options;
