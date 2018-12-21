@@ -65,7 +65,7 @@ void publishLatest(){
 
 int main (int argc, char **argv){
     ros::init(argc, argv, "path_arfuros");
-    ros::NodeHandle n;
+    ros::NodeHandle n("~");
     
     // Set z_pos from launch file parameter (default val = 0)
     n.param("z_pos", z_pos, 0.0);
