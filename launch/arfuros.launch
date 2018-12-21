@@ -1,15 +1,20 @@
 <launch>
+	
+  <!--launch file for leg detector -->
+  <include file="$(find arfuros)/launch/tracking_leg_detector.launch"/>
+
+  <!-- launch file for ros bridge -->
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 
   <node name="laser_filter" pkg="arfuros" type="laserscan_arfuros" respawn="true"/>
 
   <node name="path_relative" pkg="arfuros" type="path_arfuros" respawn="true">
   	<!-- Set z position of particles -->
-  	<param name = "z_pos" value = "0" type = "double" />
+  	<param name="z_pos" value="0.5" type="double" />
   </node>
-
   <node name="full_path" pkg="arfuros" type="fullpath_arfuros" respawn="true">
   	<!-- Set z position of particles -->
-  	<param name = "z_pos" value = "0" type = "double" />
+  	<param name="z_pos" value="0.5" type="double" />
   </node>
 
   <node name="localization_relative" pkg="arfuros" type="localization_arfuros" respawn="true"/>
