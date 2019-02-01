@@ -19,7 +19,7 @@ Tufts University
 
 // Parameters for message 
 const std::string PATH = "fullpath";
-const float DEV_THRES = 0.5f;
+const float DEV_THRES = 0.1f;
 const int NUMPOINTS = 4;
 const int OUTLOOK = 10;
 
