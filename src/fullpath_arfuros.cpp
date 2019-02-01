@@ -67,7 +67,7 @@ int main (int argc, char **argv){
     ros::NodeHandle n("~");
     
     // Set z_pos from launch file parameter (default val = 0)
-    n.param("z_pos", z_pos, 0.0);
+    // n.param("z_pos", z_pos, 0.0);
     
     relativePub = n.advertise<nav_msgs::Path>(TOPIC_OUT, 5);
     ros::Subscriber globalSub  = n.subscribe(TOPIC_IN, 5, pathCallback);
