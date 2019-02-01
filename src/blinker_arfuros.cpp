@@ -19,13 +19,11 @@ Tufts University
 
 // Parameters for message 
 const std::string PATH = "fullpath";
-<<<<<<< HEAD
+
 const float DEV_THRES = 0.2f;
 const int NUMPOINTS = 2;
-=======
-const float DEV_THRES = 0.1f;
-const int NUMPOINTS = 4;
->>>>>>> c4072977da5957ec79201e873775d22b3815002c
+
+
 const int OUTLOOK = 10;
 
 const std::string TOPIC_OUT = "/ARFUROS/Blinker";

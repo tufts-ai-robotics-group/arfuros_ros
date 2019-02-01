@@ -46,10 +46,9 @@ nav_msgs::Path transformPath(nav_msgs::Path input){
     
     for(int i = 0; i < transformed.poses.size(); i++){
         tf2::doTransform(transformed.poses[i], transformed.poses[i], transform);
-<<<<<<< HEAD
+
         //transformed.poses[i].pose.position.z += z_pos; // z_pos can be updated through launch file
-=======
->>>>>>> c4072977da5957ec79201e873775d22b3815002c
+
     }
 
     return transformed;
