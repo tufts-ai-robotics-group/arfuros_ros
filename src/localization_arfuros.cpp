@@ -47,8 +47,8 @@ void localizationCallback(const geometry_msgs::PoseArray::ConstPtr& inMsg){
 void publishLatest(){
     latestMsg = transformLocalization(latestMsg);
     ros::Time curr = ros::Time::now();
-    latestMsg.header.stamp.secs = curr.secs;
-    latestMsg.header.stamp.nsecs = curr.nsecs;
+    latestMsg.header.stamp.sec = curr.sec;
+    latestMsg.header.stamp.nsec = curr.nsec;
     relativePub.publish(latestMsg);
 }
 
