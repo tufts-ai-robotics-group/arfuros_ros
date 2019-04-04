@@ -43,7 +43,11 @@ void costmapCallback(const nav_msgs::OccupancyGrid::ConstPtr& inMsg){
 }
 
 void publishLatest(){
-    relativePub.publish(transformLocalization(latestMsg));
+    latestMsg = transformLocalization(latestMsg);
+    ros::Time curr = ros::Time::now();
+    latestMsg.header.stamp.secs = curr.secs;
+    latestMsg.header.stamp.nsecs = curr.nsecs;
+    relativePub.publish(latestMsg);
 }
 
 int main (int argc, char **argv){
