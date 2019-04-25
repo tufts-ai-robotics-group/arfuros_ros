@@ -50,11 +50,7 @@ sensor_msgs::LaserScan reducePoints(sensor_msgs::LaserScan input){
 }
 
 void scanCallback(const sensor_msgs::LaserScan::ConstPtr& inMsg){
-    sensor_msgs::LaserScan outMsg = filterScan(reducePoints(*inMsg));
-    ros::Time curr = ros::Time::now();
-    outMsg.header.stamp.sec = curr.sec;
-    outMsg.header.stamp.nsec = curr.nsec;
-    filteredPub.publish(outMsg);
+    filteredPub.publish(filterScan(reducePoints(*inMsg)));
 }
 
 int main (int argc, char **argv){

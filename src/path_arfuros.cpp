@@ -59,11 +59,7 @@ void pathCallback(const nav_msgs::Path::ConstPtr& inMsg){
 }
 
 void publishLatest(){
-    latestMsg = transformPath(latestMsg);
-    ros::Time curr = ros::Time::now();
-    latestMsg.header.stamp.sec = curr.sec;
-    latestMsg.header.stamp.nsec = curr.nsec;
-    relativePub.publish(latestMsg);
+    relativePub.publish(transformPath(latestMsg));
 }
 
 int main (int argc, char **argv){
