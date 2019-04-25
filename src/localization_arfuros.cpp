@@ -62,7 +62,7 @@ int main (int argc, char **argv){
     while(ros::ok()){
     
         try{
-            transform = tBuffer.lookupTransform(FRAME_OUT, FRAME_IN, ros::Time(0), ros::Duration(1.0));
+            transform = tBuffer.lookupTransform(FRAME_OUT, FRAME_IN, ros::Time(0));
         }
         catch(tf2::TransformException e){
             ROS_INFO("%s \n", e.what());
