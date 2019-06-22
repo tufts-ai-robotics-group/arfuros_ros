@@ -43,7 +43,6 @@ nav_msgs::Path reducePoints (nav_msgs::Path input){
 
     for(int i = 0; i < reduced_size; i++){
         output.poses[i] = input.poses[i*REDUCTION_FACTOR];
-	output.poses[i].position.x += x_offset;
     }
 
     return output;
@@ -55,7 +54,7 @@ nav_msgs::Path transformPath(nav_msgs::Path input){
     
     for(int i = 0; i < transformed.poses.size(); i++){
         tf2::doTransform(transformed.poses[i], transformed.poses[i], transform);
-
+	transformed.poses[i].pose.position.x += x_offset;
         //transformed.poses[i].pose.position.z += z_pos; // z_pos can be updated through launch file
 
     }
