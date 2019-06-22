@@ -6,6 +6,13 @@ AIR Lab
 Tufts University
 *****************************/
 
+/****
+
+Modified by Andre Cleaver. Shift the global and full path forward to avoid 
+visible points behind the robot during motion.
+
+****/
+
 #include "ros/ros.h"
 #include "nav_msgs/Path.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
@@ -23,6 +30,7 @@ const std::string FRAME_IN  = "map";
 const std::string FRAME_OUT = "base_link";
 const int REDUCTION_FACTOR  = 5;
 const int FREQUENCY         = 30;
+const double x_offset = 0.25; //offset the path in the x direction in base_link frame of reference
 double z_pos = 0;
 
 geometry_msgs::TransformStamped transform;
@@ -38,6 +46,7 @@ nav_msgs::Path reducePoints (nav_msgs::Path input){
 
     for(int i = 0; i < reduced_size; i++){
         output.poses[i] = input.poses[i*REDUCTION_FACTOR];
+	output.poses[i].position.x += x_offset;
     }
 
     return output;
