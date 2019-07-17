@@ -9,7 +9,7 @@ The goal for this framework is to allow robots to express their internal state (
 Currently, all the code is customized to work with Turtlebot robots and there are several dependencies and assumptions made in the framework to work with our lab's software architecture for ROS robots. Therefore, it is not currently in a publicly usable state though as we work through with it, it will become much better.
 
 ## How to Install
-First, follow the instructions found in the readme in the [Tufts Service Robots](https://github.com/jsinapov/tufts_service_robots) repository. Then, clone this (arfuros_ros) repository into your workspace. 
+First, follow the instructions found in the readme in the [Tufts Service Robots](https://github.com/jsinapov/tufts_service_robots) repository. Then, clone this (arfuros_ros) repository into your workspace and compiling it. The arfuros project includes the leg detector package, so clone the package from [here](https://github.com/wg-perception/people) and compile it in your workspace.
 
 ## How to Use
 This repository contains the package that needs to be installed on the robot. [This](https://github.com/faizan-m/arfuros) repository contains code that can be compiled for the user devices. 
