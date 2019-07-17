@@ -12,4 +12,4 @@ Currently, all the code is customized to work with Turtlebot robots and there ar
 This repository contains the package that needs to be installed on the robot. [This](https://github.com/faizan-m/arfuros) repository contains code that can be compiled for the user devices. 
 
 ## How to Run
-For most uses of the arfuros project, and if the Turtlebot has a lidar, first run 'roscore', then in a separate terminal window run 'roslaunch arfuros tbot2_lidar.launch'. If the Turtlebot does not have a lidar, instead run 'roslaunch arfuros tbot2.launch'.
+For most uses of the arfuros project, and if the Turtlebot has a lidar, first run 'roscore' , then in a separate terminal window run 'roslaunch arfuros tbot2_lidar.launch'. If the Turtlebot does not have a lidar, instead run 'roslaunch arfuros tbot2.launch'.
