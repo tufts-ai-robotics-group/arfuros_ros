@@ -62,10 +62,31 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   pcl_ros::transformPointCloud ("/base_link", cloud_ros, cloud_ros, *tf_listener_);
 
 
+  // Container for original & filtered data
+  pcl::PCLPointCloud2* cloud = new pcl::PCLPointCloud2; 
+  pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
+  pcl::PCLPointCloud2 cloud_filtered;
+
+  // Convert to PCL data type
+  pcl_conversions::toPCL(cloud_ros, *cloud);
+
+  // Perform the actual filtering
+  pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
+  sor.setInputCloud (cloudPtr);
+  sor.setLeafSize (0.05, 0.05, 0.05);
+  sor.filter (cloud_filtered);
+
+  // Convert to ROS data type
+  sensor_msgs::PointCloud2 output;
+  pcl_conversions::moveFromPCL(cloud_filtered, output);
 
 
+  // pcl::PCLPointCloud2 output;
+  // pcl_conversions::moveFromPCL(cloud_filtered, output);
 
-  filtered_pub_.publish(cloud_ros);
+
+  //Publish the data
+  filtered_pub_.publish(output);
 
 
 
