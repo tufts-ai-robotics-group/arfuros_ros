@@ -1,5 +1,9 @@
 #include <ros/ros.h>
 
+#include <sensor_msgs/PointCloud.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/point_cloud_conversion.h>	
+
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/Pose.h>
 // PCL specific includes
@@ -11,6 +15,8 @@
 #include <pcl_ros/transforms.h>
 #include <pcl/ros/conversions.h>
 #include <pcl_ros/point_cloud.h>
+
+#include <pcl/common/io.h>
 
 // #include <pcl/filters/passthrough.h>
 // #include <pcl/segmentation/extract_clusters.h>
@@ -25,13 +31,16 @@
 #include <pcl/filters/voxel_grid.h>
 
 #include <tf/transform_listener.h>
+#include <iostream>
+using namespace std;
 
 ros::Publisher pub;
+ros::Publisher pose_pub;
 ros::Publisher filtered_pub_;
-geometry_msgs::PoseArray block_poses_;
+// geometry_msgs::PoseArray block_poses_;
 
 // Parameters of problem
-std::string base_link_;
+// std::string base_link_;
 
 // bool has_transform_;
 
@@ -42,7 +51,10 @@ typedef pcl::PointCloud<PointT> PointCloudT;
 PointCloudT::Ptr cloud (new PointCloudT);
 
 sensor_msgs::PointCloud2 cloud_ros;
+sensor_msgs::PointCloud out_pointcloud;
 
+geometry_msgs::PoseArray poses;
+geometry_msgs::Point32 point;
 
 tf::TransformListener *tf_listener_;
 
@@ -56,6 +68,8 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
   cloud_ros = *cloud_msg;
   
+  
+
 
   tf_listener_->waitForTransform(cloud_msg->header.frame_id,"/base_link",ros::Time(0), ros::Duration(3.0)); 
 
@@ -73,20 +87,55 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   // Perform the actual filtering
   pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
   sor.setInputCloud (cloudPtr);
-  sor.setLeafSize (0.05, 0.05, 0.05);
+  sor.setLeafSize (0.1, 0.1, 0.1);
   sor.filter (cloud_filtered);
+
+
+
+
 
   // Convert to ROS data type
   sensor_msgs::PointCloud2 output;
   pcl_conversions::moveFromPCL(cloud_filtered, output);
 
-
+  
   // pcl::PCLPointCloud2 output;
   // pcl_conversions::moveFromPCL(cloud_filtered, output);
 
+  sensor_msgs::convertPointCloud2ToPointCloud(output, out_pointcloud);
+  // cout << out_pointcloud;
+
+  poses.header.stamp = ros::Time::now();
+  poses.header.frame_id = "/base_link";
+
+  for(int i = 0 ; i < out_pointcloud.points.size(); ++i)
+  {
+  	geometry_msgs::Pose pose;
+    pose.position.x = out_pointcloud.points[i].x;
+    pose.position.y = out_pointcloud.points[i].y;
+    pose.position.z = out_pointcloud.points[i].z;
+    // pose.position.z = it->z();
+    poses.poses.push_back(pose);
+
+ //  	point.x = out_pointcloud.points[i].x;
+ //  	point.y = out_pointcloud.points[i].y;
+	// point.z = out_pointcloud.points[i].z;
+  }
+
+  // cout << point;
+
+  pose_pub.publish(poses);
+
+
+
+
+
+
 
   //Publish the data
-  filtered_pub_.publish(output);
+  //filtered_pub_.publish(output);
+
+  
 
 
 
@@ -185,8 +234,8 @@ int main (int argc, char** argv)
 
   // Create a ROS publisher for the output point cloud
   // pub = nh.advertise<sensor_msgs::PointCloud2> ("/ARFUROS/PointCloud2", 1);
-  filtered_pub_ = nh.advertise< pcl::PointCloud<pcl::PointXYZRGB> >("/ARFUROS/PointCloud2", 1);
-
+  // filtered_pub_ = nh.advertise< pcl::PointCloud<pcl::PointXYZRGB> >("/ARFUROS/PointCloud2", 1);
+  pose_pub = nh.advertise<geometry_msgs::PoseArray> ("/ARFUROS/3DPointArray", 1);
 
   // Spin
   ros::spin ();
