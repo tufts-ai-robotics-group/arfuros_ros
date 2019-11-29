@@ -2,7 +2,7 @@
 
 #include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/point_cloud_conversion.h>	
+#include <sensor_msgs/point_cloud_conversion.h> 
 
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/Pose.h>
@@ -32,9 +32,14 @@
 
 #include <tf/transform_listener.h>
 #include <iostream>
+
+#include <std_msgs/Float32.h>
+
 using namespace std;
 
+
 ros::Publisher pub;
+ros::Publisher pub_test;
 ros::Publisher pose_pub;
 ros::Publisher filtered_pub_;
 // geometry_msgs::PoseArray block_poses_;
@@ -43,6 +48,8 @@ ros::Publisher filtered_pub_;
 // std::string base_link_;
 
 // bool has_transform_;
+
+std_msgs::Float32 num;
 
 typedef pcl::PointXYZRGB PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
@@ -59,6 +66,7 @@ geometry_msgs::Point32 point;
 tf::TransformListener *tf_listener_;
 
 
+std_msgs::Float32 product;
 
 // Mutex: //
 boost::mutex cloud_mutex;
@@ -66,14 +74,21 @@ boost::mutex cloud_mutex;
 
 void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
+  product = num;
+  pub_test.publish(product);
+  
+  double test_variable = 0.04;
+
   cloud_ros = *cloud_msg;
   
-  
+  string frame_chosen = "/camera_depth_frame";  
+  // string frame_chosen = "/camera_depth_optical_frame";
+  // string frame_chosen = "/base_link";
 
 
-  tf_listener_->waitForTransform(cloud_msg->header.frame_id,"/base_link",ros::Time(0), ros::Duration(3.0)); 
+  tf_listener_->waitForTransform(cloud_msg->header.frame_id,frame_chosen,ros::Time(0), ros::Duration(3.0)); 
 
-  pcl_ros::transformPointCloud ("/base_link", cloud_ros, cloud_ros, *tf_listener_);
+  pcl_ros::transformPointCloud (frame_chosen, cloud_ros, cloud_ros, *tf_listener_);
 
 
   // Container for original & filtered data
@@ -87,7 +102,7 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   // Perform the actual filtering
   pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
   sor.setInputCloud (cloudPtr);
-  sor.setLeafSize (0.1, 0.1, 0.1);
+  sor.setLeafSize (0.04, 0.04, 0.04);
   sor.filter (cloud_filtered);
 
 
@@ -106,20 +121,20 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   // cout << out_pointcloud;
 
   poses.header.stamp = ros::Time::now();
-  poses.header.frame_id = "/base_link";
+  poses.header.frame_id = frame_chosen;
 
   for(int i = 0 ; i < out_pointcloud.points.size(); ++i)
   {
-  	geometry_msgs::Pose pose;
+    geometry_msgs::Pose pose;
     pose.position.x = out_pointcloud.points[i].x;
     pose.position.y = out_pointcloud.points[i].y;
     pose.position.z = out_pointcloud.points[i].z;
     // pose.position.z = it->z();
     poses.poses.push_back(pose);
 
- //  	point.x = out_pointcloud.points[i].x;
- //  	point.y = out_pointcloud.points[i].y;
-	// point.z = out_pointcloud.points[i].z;
+ //   point.x = out_pointcloud.points[i].x;
+ //   point.y = out_pointcloud.points[i].y;
+  // point.z = out_pointcloud.points[i].z;
   }
 
   // cout << point;
@@ -217,6 +232,15 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   //#################################################################
 }
 
+void chatterCallback(const std_msgs::Float32 msg)
+{
+  num = msg;
+
+
+  cout << num;
+}
+
+
 int main (int argc, char** argv)
 {
   // Initialize ROS
@@ -228,15 +252,17 @@ int main (int argc, char** argv)
   tf_listener_ = &tf_listener_local;
 
   // Create a ROS subscriber for the input point cloud
-  // ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth_registered/points", 1, cloud_cb);
-  ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth/points", 1, cloud_cb);
+  ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth_registered/points", 1, cloud_cb);
+  // ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth/points", 1, cloud_cb);
 
+  ros::Subscriber sub_param = nh.subscribe("/chatter", 1, chatterCallback);
 
   // Create a ROS publisher for the output point cloud
   // pub = nh.advertise<sensor_msgs::PointCloud2> ("/ARFUROS/PointCloud2", 1);
   // filtered_pub_ = nh.advertise< pcl::PointCloud<pcl::PointXYZRGB> >("/ARFUROS/PointCloud2", 1);
   pose_pub = nh.advertise<geometry_msgs::PoseArray> ("/ARFUROS/3DPointArray", 1);
 
+  pub_test = nh.advertise<std_msgs::Float32>("/talker", 1);
   // Spin
   ros::spin ();
 }
