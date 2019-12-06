@@ -35,6 +35,9 @@
 
 #include <std_msgs/Float32.h>
 
+#include "std_msgs/String.h"
+#include <sstream>
+
 using namespace std;
 
 
@@ -49,7 +52,9 @@ ros::Publisher filtered_pub_;
 
 // bool has_transform_;
 
-std_msgs::Float32 num;
+// std_msgs::Float32 num;
+std_msgs::String num;
+
 
 typedef pcl::PointXYZRGB PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
@@ -66,7 +71,8 @@ geometry_msgs::Point32 point;
 tf::TransformListener *tf_listener_;
 
 
-std_msgs::Float32 product;
+// std_msgs::Float32 product;
+std_msgs::String product;
 
 // Mutex: //
 boost::mutex cloud_mutex;
@@ -232,11 +238,9 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   //#################################################################
 }
 
-void chatterCallback(const std_msgs::Float32 msg)
+void voxelSizeCallback(const std_msgs::String msg)
 {
   num = msg;
-
-
   cout << num;
 }
 
@@ -255,14 +259,14 @@ int main (int argc, char** argv)
   ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth_registered/points", 1, cloud_cb);
   // ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth/points", 1, cloud_cb);
 
-  ros::Subscriber sub_param = nh.subscribe("/chatter", 1, chatterCallback);
+  ros::Subscriber sub_param = nh.subscribe("/voxelGrid/leafSize", 1, voxelSizeCallback);
 
   // Create a ROS publisher for the output point cloud
   // pub = nh.advertise<sensor_msgs::PointCloud2> ("/ARFUROS/PointCloud2", 1);
   // filtered_pub_ = nh.advertise< pcl::PointCloud<pcl::PointXYZRGB> >("/ARFUROS/PointCloud2", 1);
   pose_pub = nh.advertise<geometry_msgs::PoseArray> ("/ARFUROS/3DPointArray", 1);
 
-  pub_test = nh.advertise<std_msgs::Float32>("/talker", 1);
+  pub_test = nh.advertise<std_msgs::String>("/talker", 1);
   // Spin
   ros::spin ();
 }
