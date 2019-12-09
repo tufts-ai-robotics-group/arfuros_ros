@@ -6,6 +6,7 @@
 
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/Pose.h>
+#include <geometry_msgs/Point.h>
 // PCL specific includes
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
@@ -33,10 +34,7 @@
 #include <tf/transform_listener.h>
 #include <iostream>
 
-#include <std_msgs/Float32.h>
-
-#include "std_msgs/String.h"
-#include <sstream>
+#include <std_msgs/Float64.h>
 
 using namespace std;
 
@@ -52,9 +50,7 @@ ros::Publisher filtered_pub_;
 
 // bool has_transform_;
 
-// std_msgs::Float32 num;
-std_msgs::String num;
-
+geometry_msgs::Point num;
 
 typedef pcl::PointXYZRGB PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
@@ -71,8 +67,11 @@ geometry_msgs::Point32 point;
 tf::TransformListener *tf_listener_;
 
 
-// std_msgs::Float32 product;
-std_msgs::String product;
+geometry_msgs::Point product;
+
+std_msgs::Float64 voxel_size;
+std_msgs::Float64 xValue;
+
 
 // Mutex: //
 boost::mutex cloud_mutex;
@@ -82,9 +81,18 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
   product = num;
   pub_test.publish(product);
-  
-  double test_variable = 0.04;
 
+  // voxel_size = product->x;
+
+  std_msgs::Float64 scale, test_variable;
+  scale.data = 0.01;
+
+
+
+  // test_variable = xValue.data;
+  double x = xValue.data * scale.data;
+  test_variable.data = x;
+  pub.publish(test_variable);
   cloud_ros = *cloud_msg;
   
   string frame_chosen = "/camera_depth_frame";  
@@ -108,7 +116,7 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   // Perform the actual filtering
   pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
   sor.setInputCloud (cloudPtr);
-  sor.setLeafSize (0.04, 0.04, 0.04);
+  sor.setLeafSize (x, x, x);
   sor.filter (cloud_filtered);
 
 
@@ -148,18 +156,8 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   pose_pub.publish(poses);
 
 
-
-
-
-
-
   //Publish the data
   //filtered_pub_.publish(output);
-
-  
-
-
-
 
 
   // // // filtered_pub_.poses.clear();
@@ -238,10 +236,18 @@ void cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   //#################################################################
 }
 
-void voxelSizeCallback(const std_msgs::String msg)
+void voxelSizeCallback(const geometry_msgs::Point::ConstPtr& msg)
 {
-  num = msg;
-  cout << num;
+
+  // double voxel_size;
+  num = *msg;
+  // voxel_size = msg->x; 
+  // std_msgs::Float64 xValue;
+  xValue.data = num.x;
+
+  // pub.publish(xValue);
+
+
 }
 
 
@@ -256,8 +262,8 @@ int main (int argc, char** argv)
   tf_listener_ = &tf_listener_local;
 
   // Create a ROS subscriber for the input point cloud
-  ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth_registered/points", 1, cloud_cb);
-  // ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth/points", 1, cloud_cb);
+  // ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth_registered/points", 1, cloud_cb);
+  ros::Subscriber sub = nh.subscribe<sensor_msgs::PointCloud2> ("/camera/depth/points", 1, cloud_cb);
 
   ros::Subscriber sub_param = nh.subscribe("/voxelGrid/leafSize", 1, voxelSizeCallback);
 
@@ -266,7 +272,9 @@ int main (int argc, char** argv)
   // filtered_pub_ = nh.advertise< pcl::PointCloud<pcl::PointXYZRGB> >("/ARFUROS/PointCloud2", 1);
   pose_pub = nh.advertise<geometry_msgs::PoseArray> ("/ARFUROS/3DPointArray", 1);
 
-  pub_test = nh.advertise<std_msgs::String>("/talker", 1);
+  pub_test = nh.advertise<geometry_msgs::Point>("/talker", 1);
+
+  pub = nh.advertise<std_msgs::Float64>("/Float64", 1);
   // Spin
   ros::spin ();
 }
